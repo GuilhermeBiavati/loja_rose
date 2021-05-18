@@ -1,18 +1,13 @@
-version: '3'
+version: "3"
 services:
-
   #PHP Service
   app:
     build:
-      args:
-        user: lojarose
-        uid: 1000
       context: .
       dockerfile: Dockerfile
-    image: lojaRose
+    image: digitalocean.com/php
     container_name: app
     restart: unless-stopped
-    working_dir: /var/www/
     tty: true
     environment:
       SERVICE_NAME: app
@@ -22,7 +17,7 @@ services:
       - ./:/var/www
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
-      - app-loja-rose
+      - app-network
 
   #Nginx Service
   webserver:
@@ -35,34 +30,32 @@ services:
       - "443:443"
     volumes:
       - ./:/var/www
-      - ./nginx:/etc/nginx/conf.d
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
     networks:
-      - app-loja-rose
+      - app-network
 
   #MySQL Service
   db:
-    image: mysql:5.7
+    image: mysql:5.7.22
     container_name: db
     restart: unless-stopped
     tty: true
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: your_mysql_root_password
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
       - dbdata:/var/lib/mysql/
       - ./mysql/my.cnf:/etc/mysql/my.cnf
     networks:
-      - app-loja-rose
+      - app-network
 
 #Docker Networks
 networks:
-  app-loja-rose:
+  app-network:
     driver: bridge
 #Volumes
 volumes:
