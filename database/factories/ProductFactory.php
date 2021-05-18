@@ -26,6 +26,7 @@ class ProductFactory extends Factory
             'name' => $this->faker->name(),
             'description' => rand(1, 10) % 2 == 0 ? $this->faker->sentence() : null,
             'price' => $this->faker->randomNumber(2),
+            'amount' => $this->faker->randomNumber(2),
             'brand_id' => Brand::inRandomOrder()->first()->id,
         ];
     }
