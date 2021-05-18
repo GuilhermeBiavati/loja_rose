@@ -4,11 +4,15 @@ services:
   #PHP Service
   app:
     build:
+      args:
+        user: lojarose
+        uid: 1000
       context: .
       dockerfile: Dockerfile
-    image: php
+    image: lojaRose
     container_name: app
     restart: unless-stopped
+    working_dir: /var/www/
     tty: true
     environment:
       SERVICE_NAME: app
@@ -18,7 +22,7 @@ services:
       - ./:/var/www
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
-      - app-network
+      - app-loja-rose
 
   #Nginx Service
   webserver:
@@ -31,13 +35,13 @@ services:
       - "443:443"
     volumes:
       - ./:/var/www
-      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./nginx:/etc/nginx/conf.d
     networks:
-      - app-network
+      - app-loja-rose
 
   #MySQL Service
   db:
-    image: mysql:5.7.22
+    image: mysql:5.7
     container_name: db
     restart: unless-stopped
     tty: true
@@ -54,11 +58,11 @@ services:
       - dbdata:/var/lib/mysql/
       - ./mysql/my.cnf:/etc/mysql/my.cnf
     networks:
-      - app-network
+      - app-loja-rose
 
 #Docker Networks
 networks:
-  app-network:
+  app-loja-rose:
     driver: bridge
 #Volumes
 volumes:
