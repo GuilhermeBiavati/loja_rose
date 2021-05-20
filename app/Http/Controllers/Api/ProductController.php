@@ -10,6 +10,9 @@ class ProductController extends BasicCrudController
 {
     private $rules;
 
+    protected $paginationSize = 16;
+
+
     public function __construct()
     {
         $this->rules = [

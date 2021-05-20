@@ -14,11 +14,9 @@ class ProductSeeder extends Seeder
 {
 
     private $imgs = [
-        'faker/thumbs/desodorante.jpg',
-        'faker/thumbs/essencial.jpg',
-        'faker/thumbs/exclusivo.jpg',
-        'faker/thumbs/hidratante-exclusivo.jpg',
-        'faker/thumbs/hidratante.jpg'
+        'faker/thumbs/desodorante.png',
+        'faker/thumbs/exclusivo.png',
+        'faker/thumbs/hidratante.png'
     ];
 
     private $relations = [

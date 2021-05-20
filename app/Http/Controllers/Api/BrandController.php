@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class BrandController extends BasicCrudController
 {
+
+    protected $paginationSize = 0;
+
     private $rules = [
         'name' => 'required|max:255',
         'description' => 'nullable',

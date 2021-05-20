@@ -46,4 +46,4 @@ services:
 
 networks:
   lojarose:
-  driver: bridge
+    driver: bridge

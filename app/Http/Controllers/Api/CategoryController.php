@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 class CategoryController extends BasicCrudController
 {
+    protected $paginationSize = 0;
+
     private $rules = [
         'name' => 'required|max:255',
         'description' => 'nullable',

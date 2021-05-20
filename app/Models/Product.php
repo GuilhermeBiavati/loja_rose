@@ -17,14 +17,15 @@ class Product extends Model
     const THUMB_FILE_MAX_SIZE = 1024 * 5;
 
     protected $fillable = [
-        'name', 'description', 'is_active', 'price', 'amount', 'thumb_file', 'brand_id',
+        'name', 'description', 'is_active', 'price', 'amount', 'thumb_file', 'brand_id', 'color',
     ];
 
     protected $dates = ['deleted_at'];
 
     protected $casts = [
         'id' => "string",
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'price' => 'float',
     ];
     public $incrementing = false;
 

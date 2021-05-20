@@ -19,6 +19,7 @@ class CreateProductsTable extends Migration
             $table->text('description')->nullable();
             $table->decimal('price');
             $table->integer('amount');
+            $table->string('color');
             $table->string('thumb_file')->nullable();
             $table->uuid('brand_id')->index();
             $table->foreign('brand_id')->references('id')->on('brands');
