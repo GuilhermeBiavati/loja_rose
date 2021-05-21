@@ -11,6 +11,7 @@ abstract class BasicCrudController extends Controller
 {
 
     protected $paginationSize = 15;
+    protected $rand = false;
 
     protected abstract function model();
     protected abstract function rulesStore();
@@ -26,7 +27,7 @@ abstract class BasicCrudController extends Controller
     public function index()
     {
 
-        $data = !$this->paginationSize ? $this->model()::all() : $this->model()::paginate($this->paginationSize);
+        $data = !$this->paginationSize ? $this->model()::all() : $this->model()::inRandomOrder()->paginate($this->paginationSize);
         $resourceCollectionClass = $this->resourceCollection();
         $refClass = new ReflectionClass($this->resourceCollection());
         return $refClass->isSubclassOf(ResourceCollection::class) ? new $resourceCollectionClass($data) : $resourceCollectionClass::collection($data);
