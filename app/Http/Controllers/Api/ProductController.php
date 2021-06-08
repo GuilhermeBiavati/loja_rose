@@ -21,7 +21,7 @@ class ProductController extends BasicCrudController
             'price' => 'numeric',
             'amount' => 'integer',
             'is_active' => 'boolean',
-            'brand_id' => 'required|integer|exists:brands,id,deleted_at,NULL',
+            'brand_id' => 'required|string|exists:brands,id,deleted_at,NULL',
             'categories_id' => 'required|array|exists:categories,id,deleted_at,NULL',
             'thumb_file' => 'image|max:' . Product::THUMB_FILE_MAX_SIZE,
         ];

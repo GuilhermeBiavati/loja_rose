@@ -3,7 +3,6 @@
 
 @setup
 $path = '/var/www/html/loja_rose'
-
 @endsetup
 
 {{-- @story('deploy')
