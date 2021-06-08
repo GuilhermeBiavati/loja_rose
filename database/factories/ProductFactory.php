@@ -25,7 +25,7 @@ class ProductFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'description' => rand(1, 10) % 2 == 0 ? $this->faker->sentence() : null,
-            'price' => $this->faker->randomNumber(2),
+            'price' => $this->faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = 500),
             'amount' => $this->faker->randomNumber(2),
             'color' => $this->faker->hexcolor(),
             'brand_id' => Brand::inRandomOrder()->first()->id,
