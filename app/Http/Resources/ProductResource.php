@@ -18,6 +18,7 @@ class ProductResource extends JsonResource
             'categories' => CategoryResource::collection($this->categories),
             'brand' => new BrandResource($this->brand),
             'thumb_file_url' => $this->thumb_file_url,
+            'price' => number_format($this->price, 2, ',', '')
         ];
     }
 }
