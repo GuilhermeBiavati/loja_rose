@@ -18,7 +18,7 @@ class ProductController extends BasicCrudController
         $this->rules = [
             'name' => 'required|max:255',
             'description' => 'required',
-            'price' => 'decimal',
+            'price' => 'float',
             'amount' => 'integer',
             'is_active' => 'boolean',
             'brand_id' => 'required|integer|exists:brands,id,deleted_at,NULL',
