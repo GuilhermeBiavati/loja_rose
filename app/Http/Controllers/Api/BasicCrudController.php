@@ -24,10 +24,9 @@ abstract class BasicCrudController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-
-        $data = !$this->paginationSize ? $this->model()::all() : $this->model()::inRandomOrder()->paginate($this->paginationSize);
+        $data = !$this->paginationSize ? $this->model()::all() : $this->model()::paginate($this->paginationSize);
         $resourceCollectionClass = $this->resourceCollection();
         $refClass = new ReflectionClass($this->resourceCollection());
         return $refClass->isSubclassOf(ResourceCollection::class) ? new $resourceCollectionClass($data) : $resourceCollectionClass::collection($data);

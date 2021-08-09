@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use ReflectionClass;
 
 class ProductController extends BasicCrudController
 {
     private $rules;
 
-    protected $paginationSize = 16;
-
+    protected $paginationSize = 0;
 
     public function __construct()
     {
@@ -26,6 +26,36 @@ class ProductController extends BasicCrudController
             'categories_id' => 'required|array|exists:categories,id,deleted_at,NULL',
             'thumb_file' => 'image|max:' . Product::THUMB_FILE_MAX_SIZE,
         ];
+    }
+
+    public function index(Request $request)
+    {
+
+        $data = Product::with('brand', 'categories')->inRandomOrder();
+
+        $search = $request->input('search');
+
+        if ($search) {
+            $data = $data->where('name', 'like', "%" . $search . "%");
+        }
+
+        if ($request->input('category')) {
+            $data = $data->whereHas('categories', function ($q) use ($request) {
+                return $q->where('id', $request->input('category'));
+            });
+        }
+
+        if ($request->input('brand')) {
+            $data = $data->where('brand_id', $request->get('brand'));
+        }
+
+        if (!$this->paginationSize) {
+            $data = $data->get();
+        } else {
+            $data = $data->paginate($this->paginationSize);
+        }
+
+        return ProductResource::collection($data);
     }
 
     public function store(Request $request)
