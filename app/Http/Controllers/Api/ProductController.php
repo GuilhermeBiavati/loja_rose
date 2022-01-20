@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use ReflectionClass;
 
 class ProductController extends BasicCrudController
@@ -28,31 +29,75 @@ class ProductController extends BasicCrudController
         ];
     }
 
+    // public function index(Request $request)
+    // {
+
+    //     $data = Product::with('brand', 'categories')->inRandomOrder();
+
+    //     $search = $request->input('search');
+
+    //     if ($search) {
+    //         $data = $data->where('name', 'like', "%" . $search . "%");
+    //     }
+
+    //     if ($request->input('category')) {
+    //         $data = $data->whereHas('categories', function ($q) use ($request) {
+    //             return $q->where('id', $request->input('category'));
+    //         });
+    //     }
+
+    //     if ($request->input('brand')) {
+    //         $data = $data->where('brand_id', $request->get('brand'));
+    //     }
+
+    //     if (!$this->paginationSize) {
+    //         $data = $data->get();
+    //     } else {
+    //         $data = $data->paginate($this->paginationSize);
+    //     }
+
+    //     return ProductResource::collection($data);
+    // }
+
     public function index(Request $request)
     {
-
-        $data = Product::with('brand', 'categories')->inRandomOrder();
-
         $search = $request->input('search');
+        $category = $request->input('category');
+        $brand = $request->input('brand');
 
-        if ($search) {
-            $data = $data->where('name', 'like', "%" . $search . "%");
-        }
+        if ($search || $category || $brand) {
+            $data = Product::with('brand', 'categories')->inRandomOrder();
 
-        if ($request->input('category')) {
-            $data = $data->whereHas('categories', function ($q) use ($request) {
-                return $q->where('id', $request->input('category'));
-            });
-        }
+            if ($search) {
+                $data = $data->where('name', 'like', "%" . $search . "%");
+            }
 
-        if ($request->input('brand')) {
-            $data = $data->where('brand_id', $request->get('brand'));
-        }
+            if ($category) {
+                $data = $data->whereHas('categories', function ($q) use ($request) {
+                    return $q->where('id', $request->input('category'));
+                });
+            }
 
-        if (!$this->paginationSize) {
-            $data = $data->get();
+            if ($brand) {
+                $data = $data->where('brand_id', $request->get('brand'));
+            }
+
+            if (!$this->paginationSize) {
+                $data = $data->get();
+            } else {
+                $data = $data->paginate($this->paginationSize);
+            }
         } else {
-            $data = $data->paginate($this->paginationSize);
+            $data = Cache::remember('products', 5 * 60, function () {
+                $data = Product::with('brand', 'categories')->inRandomOrder();
+                if (!$this->paginationSize) {
+                    $data = $data->get();
+                } else {
+                    $data = $data->paginate($this->paginationSize);
+                }
+
+                return $data;
+            });
         }
 
         return ProductResource::collection($data);
