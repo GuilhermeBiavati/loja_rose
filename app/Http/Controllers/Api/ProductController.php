@@ -65,8 +65,11 @@ class ProductController extends BasicCrudController
         $category = $request->input('category');
         $brand = $request->input('brand');
 
+        $data = Product::with('brand', 'categories')->where('amount', '>', 0)->inRandomOrder();
+
+
         if ($search || $category || $brand) {
-            $data = Product::with('brand', 'categories')->where('amount', '>', 0)->inRandomOrder();
+
 
             if ($search) {
                 $data = $data->where('name', 'like', "%" . $search . "%");
@@ -87,9 +90,10 @@ class ProductController extends BasicCrudController
             } else {
                 $data = $data->paginate($this->paginationSize);
             }
+
+            return ProductResource::collection($data);
         } else {
-            $data = Cache::remember('products', 5 * 60, function () {
-                $data = Product::with('brand', 'categories')->inRandomOrder();
+            $cache = Cache::remember('products', 5 * 60, function () use ($data) {
                 if (!$this->paginationSize) {
                     $data = $data->get();
                 } else {
@@ -98,9 +102,9 @@ class ProductController extends BasicCrudController
 
                 return $data;
             });
-        }
 
-        return ProductResource::collection($data);
+            return ProductResource::collection($cache);
+        }
     }
 
     public function store(Request $request)
