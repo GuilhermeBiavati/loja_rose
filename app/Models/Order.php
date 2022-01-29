@@ -30,16 +30,39 @@ class Order extends Model
     // Evitar realizar regra de negocio nos Controllers
     public static function create(array $attributes = [])
     {
-        $product = Product::where('id', $attributes['product_id'])->first();
-        $attributes = $attributes + ['price' => $product->price];
-        return static::query()->create($attributes);
+
+        try {
+            DB::beginTransaction();
+
+            $product = Product::where('id', $attributes['product_id'])->first();
+            $attributes = $attributes + ['price' => $product->price];
+            $product->amount = $product->amount - $attributes['amount'];
+            $product->save();
+            $obj = static::query()->create($attributes);
+            DB::commit();
+
+            return $obj;
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
     }
 
     public function update(array $attributes = [], array $options = [])
     {
-        $product = Product::where('id', $attributes['product_id'])->first();
-        $attributes = $attributes + ['price' => $product->price];
-        return static::query()->update($attributes, $options);
+        try {
+            DB::beginTransaction();
+            $product = Product::where('id', $attributes['product_id'])->first();
+            $attributes = $attributes + ['price' => $product->price];
+            $product->amount = $product->amount - $attributes['amount'];
+            $product->save();
+            $saved = parent::update($attributes, $options);
+            DB::commit();
+            return $saved;
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
     }
 
     public function product()

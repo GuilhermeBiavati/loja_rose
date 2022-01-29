@@ -66,7 +66,7 @@ class ProductController extends BasicCrudController
         $brand = $request->input('brand');
 
         if ($search || $category || $brand) {
-            $data = Product::with('brand', 'categories')->inRandomOrder();
+            $data = Product::with('brand', 'categories')->where('amount', '>', 0)->inRandomOrder();
 
             if ($search) {
                 $data = $data->where('name', 'like', "%" . $search . "%");

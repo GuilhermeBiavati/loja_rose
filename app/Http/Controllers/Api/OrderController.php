@@ -77,7 +77,7 @@ class OrderController extends BasicCrudController
         $order = $this->findOrFail($id);
         $validated = $this->validate($request, $this->rulesUpdate());
         $order->update($validated);
-        return new OrderResource($order->refresh());
+        return new OrderResource($order);
     }
 
     protected function model()
