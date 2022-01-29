@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 Route::apiResource('categories', CategoryController::class)->middleware('client');
 Route::apiResource('brands', BrandController::class)->middleware('client');
 Route::apiResource('products', ProductController::class)->middleware('client');
+Route::apiResource('orders', OrderController::class);
 
 Route::apiResource('categories', CategoryController::class)->only('index', 'show');
 Route::apiResource('brands', BrandController::class)->only('index', 'show');
